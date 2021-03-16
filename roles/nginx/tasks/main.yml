@@ -1,0 +1,29 @@
+---
+
+
+ - name:  Check and Print Linux Version
+   debug: var=ansible_os_family
+
+ - block: #=====Install NGINX=====#
+
+
+     - name: Update cache
+       apt: update_cache=yes
+       become: yes
+
+     - name: Install NGINX
+       apt: name=nginx state=latest
+       become: yes
+
+     - name: Start NGINX
+       service: name=nginx state=started enabled=yes
+
+     - name: Update NGINX confs for WP + PHP
+       template: "src=../templates/default-site.conf dest=/etc/nginx/sites-available/{{server_hostname}} owner=www-data group=www-data mode=0644"
+       become: yes
+
+     - name: Enabel site
+       file: "src=/etc/nginx/sites-available/{{server_hostname}} dest=/etc/nginx/sites-enabled/{{server_hostname}} owner=www-data group=www-data state=link"
+       notify:
+         - restart nginx
+       become: yes

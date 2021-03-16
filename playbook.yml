@@ -1,0 +1,12 @@
+- hosts: client1
+
+
+  roles:
+
+    - nginx
+
+    - mysql
+
+    - wordpress
+
+    - php
